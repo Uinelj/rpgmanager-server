@@ -3,6 +3,11 @@
   require_once('io.inc.php');
 ?>
 <h1>Bienvenu mj ^^</h1>
+<?php
+  if($_POST['result'] != NULL){
+    echo "<p>" . $_POST['result'] . "</p>";
+  }
+?>
 <h2>Créer un compte</h2>
 
 <form action="action.php?a=createUser" method="post">
@@ -60,26 +65,26 @@
 </form>
 
 <?php
-  // $user = new user(
-  //   str_replace(' ', '', "Fluba"),
-  //   "Fluba",
-  //   "Neutral good",
-  //   "Orc",
-  //   "Warlock",
-  //   "6",
-  //   "4",
-  //   "4",
-  //   "12",
-  //   "2",
-  //   "4",
-  //   "17",
-  //   "d6",
-  //   "1",
-  //   "17",
-  //   "1",
-  //   "20");
-  // store($user);
-
+  $user = new user(
+    str_replace(' ', '', "Fluba"),
+    "Fluba",
+    "Neutral good",
+    "Orc",
+    "Warlock",
+    "6",
+    "4",
+    "4",
+    "12",
+    "2",
+    "4",
+    "17",
+    "d6",
+    "1",
+    "17",
+    "1",
+    "20");
+  //store($user);
+  //echo $user->setCha(4);
   //$user = load("Fluba");
   //print_r($user);
 ?>

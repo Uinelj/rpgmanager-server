@@ -4,44 +4,101 @@
   switch ($_GET['a']) {
     /*GM acions*/
     case 'createUser':
-      $user = new user(
-        str_replace(' ', '', $_POST['name']),
-        $_POST['name'],
-        $_POST['align'],
-        $_POST['race'],
-        $_POST['class'],
-        $_POST['str'],
-        $_POST['dex'],
-        $_POST['con'],
-        $_POST['intel'],
-        $_POST['wis'],
-        $_POST['cha'],
-        $_POST['maxhp'],
-        $_POST['dmg'],
-        $_POST['armour'],
-        $_POST['hp'],
-        $_POST['lvl'],
-        $_POST['xp'],
-        $_POST['bonds'],
-        $_POST['gear'],
-        $_POST['moves']
-      );
-      if(load($user->getId()) != false){
-        echo "ERR : Player already exists. :/";
-        //header('location: ' . $_SERVER['HTTP_REFERER']);
-        exit();
+      if($_POST != NULL){
+        $user = new user(
+          str_replace(' ', '', $_POST['name']),
+          $_POST['name'],
+          $_POST['align'],
+          $_POST['race'],
+          $_POST['class'],
+          $_POST['str'],
+          $_POST['dex'],
+          $_POST['con'],
+          $_POST['intel'],
+          $_POST['wis'],
+          $_POST['cha'],
+          $_POST['maxhp'],
+          $_POST['dmg'],
+          $_POST['armour'],
+          $_POST['hp'],
+          $_POST['lvl'],
+          $_POST['xp'],
+          $_POST['bonds'],
+          $_POST['gear'],
+          $_POST['moves']
+        );
+        if(load($user->getId()) != false){
+          $result['success'] = false;
+          $result['msg'] = "Error : User already exists";
+          $result['id'] = $_GET['id'];
+        }else{
+          store($user);
+          $result['success'] = true;
+        }
+      }else{
+        $result['success'] = false;
+        $result['msg'] = "Error : no user given.";
       }
-      store($user);
       break;
     case 'rmUser':
+      if(!rm($_GET['id'])){
+        $result['success'] = false;
+        $result['msg'] = "Error : Unable to remove user";
+        $result['id'] = $_GET['id'];
+      }else{
+        $result['success'] = true;
+      }
       break;
     /**/
-    case 'get':
+    case 'get': //TODO : utiliser call_user_func au lieu du tableau degeu
+      if($_GET['id'] == NULL){
+        $result['success'] = false;
+        $result['msg'] = "Error : no user id given.";
+      }else{
+        $user = load($_GET['id']);
+        if($user != false){
+          $user = $user->toArray();
+          $result['success'] = true;
+          if($_GET['field'] != NULL){
+            $result['field'] = $_GET['field'];
+            if($user[$_GET['field']] == NULL){
+              $result['success'] = false;
+              $result['msg'] = "Error : Unknown field.";
+            }else{
+              $result['value'] = $user[$_GET['field']];
+            }
+          }else{
+            $result['user'] = json_encode($user);
+          }
+        }else{
+          $result['success'] = false;
+          $result['msg'] = "Error : User could not be loaded";
+          $result['id'] = $_GET['id'];
+        }
+      }
       break;
     case 'update':
+      if($_GET['id'] == NULL){
+        $result['success'] = false;
+        $result['msg'] = "Error : no user id given.";
+      }else if($_GET['field'] == NULL){
+        $result['success'] = false;
+        $result['msg'] = "Error : no field given.";
+      }else{
+        $user = load($_GET['id']);
+        if($user == NULL){
+          $result['success'] = false;
+          $result['msg'] = "Error : User could not be found.";
+          $result['id'] = $_GET['id'];
+        }else{
+          call_user_func("$user->get" . ucfirst($_GET['field']), $_GET['value']);
+
+        }
+      }
       break;
     default:
       echo "ERR : No actions given. :(";
       break;
   }
+  echo json_encode($result);
 ?>
