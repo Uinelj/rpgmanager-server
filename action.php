@@ -91,8 +91,16 @@
           $result['msg'] = "Error : User could not be found.";
           $result['id'] = $_GET['id'];
         }else{
-          call_user_func("$user->get" . ucfirst($_GET['field']), $_GET['value']);
-
+          //TODO check if field exists
+          $methodName = "set" . ucfirst($_GET['field']);
+          $user->{$methodName}($_GET['value']);
+          if(store($user) == false){
+            $result['success'] = false;
+            $result['msg'] = "Error : User could not be saved.";
+            $result['id'] = $_GET['id'];
+          }else{
+            $result['success'] = true;
+          }
         }
       }
       break;
