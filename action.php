@@ -4,7 +4,7 @@
   switch ($_GET['a']) {
     /*GM acions*/
     case 'createUser':
-      if($_POST != NULL){
+      if(($_POST != NULL) || $_POST['id'] != NULL){//TODO: fix this, as we enter the if even with a void POST request.
         $user = new user(
           str_replace(' ', '', $_POST['name']),
           $_POST['name'],
@@ -32,8 +32,13 @@
           $result['msg'] = "Error : User already exists";
           $result['id'] = $_GET['id'];
         }else{
-          store($user);
-          $result['success'] = true;
+          if(!store($user)){
+            $result['success'] = false;
+            $result['msg'] = "Error : Unable to store user";
+            $result['id'] = $_POST['id'];
+          }else{
+            $result['success'] = true;
+          }
         }
       }else{
         $result['success'] = false;
@@ -41,10 +46,11 @@
       }
       break;
     case 'rmUser':
-      if(!rm($_GET['id'])){
+      $id=str_replace(' ', '', $_GET['name']);
+      if(!rm($id)){
         $result['success'] = false;
         $result['msg'] = "Error : Unable to remove user";
-        $result['id'] = $_GET['id'];
+        $result['id'] = $id;
       }else{
         $result['success'] = true;
       }

@@ -30,4 +30,6 @@
   function rm($id){
     return unlink("./users/" . $id);
   }
+
+  
 ?>
