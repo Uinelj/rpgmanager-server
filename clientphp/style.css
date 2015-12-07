@@ -1,0 +1,11 @@
+html{
+	max-width: 700px;
+	margin: 0 auto;
+}
+.inputstat{
+	display: inline-block;
+	margin: 0.25em;
+}
+textarea{
+	width: 203px;
+}
