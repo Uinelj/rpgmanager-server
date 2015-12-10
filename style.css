@@ -16,3 +16,12 @@ table, th, td{
 table{
 	width: 100%;
 }
+a{
+	color: #666666;
+}
+a:visited{
+	color: #666666;
+}
+a:active{
+	color: #999967;
+}
