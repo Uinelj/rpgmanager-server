@@ -1,6 +1,7 @@
 <?php
   require_once('user.php');
   require_once('io.inc.php');
+  $config = include('config.php');
   switch ($_GET['a']) {
     /*GM acions*/
     case 'createUser':
@@ -97,15 +98,21 @@
           $result['msg'] = "Error : User could not be found.";
           $result['id'] = $_GET['id'];
         }else{
-          //TODO check if field exists
-          $methodName = "set" . ucfirst($_GET['field']);
-          $user->{$methodName}($_GET['value']);
-          if(store($user) == false){
+          if(property_exists('user', $_GET['field']) == false){
             $result['success'] = false;
-            $result['msg'] = "Error : User could not be saved.";
-            $result['id'] = $_GET['id'];
+            $result['msg'] = "Error : Unknown field.";
+            $result['field'] = $_GET['field'];
           }else{
-            $result['success'] = true;
+          //TODO check if field exists
+            $methodName = "set" . ucfirst($_GET['field']);
+            $user->{$methodName}($_GET['value']);
+            if(store($user) == false){
+              $result['success'] = false;
+              $result['msg'] = "Error : User could not be saved.";
+              $result['id'] = $_GET['id'];
+            }else{
+              $result['success'] = true;
+            }
           }
         }
       }
